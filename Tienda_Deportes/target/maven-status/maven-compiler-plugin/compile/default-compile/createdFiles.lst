@@ -1,0 +1,10 @@
+Dominio\UsuarioDao.class
+Dominio\CategoriaDao.class
+Dominio\MarcaDao.class
+Dominio\Usuario.class
+test\Test_Tienda.class
+Dominio\Categoria.class
+datos\Conexion.class
+Dominio\Marca.class
+Dominio\Producto.class
+Dominio\ProductoDao.class

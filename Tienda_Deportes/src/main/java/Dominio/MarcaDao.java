@@ -1,0 +1,154 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Dominio;
+
+import static datos.Conexion.close;
+import static datos.Conexion.getConnection;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author aniba
+ */
+public class MarcaDao {
+    private static final String SQL_SELECT ="SELECT * FROM marca";
+    private static final String SQL_INSERT ="INSERT INTO marca (Idm,"+
+            "Nombre, Tipo, Fecha) VALUES(?,?,?,?)";
+    private static final String SQL_UPDATE ="UPDATE marca SET"+
+            " Nombre=?,Tipo=?,Fecha=?"
+            + "WHERE Idm=?";
+    private static final String SQL_DELETE ="DELETE FROM marca WHERE Idm=?";
+    
+    public List<Marca> seleccionar () throws SQLException {
+        
+        Connection conn = null;
+        PreparedStatement stmt  = null;
+        ResultSet rs = null;
+        Marca marca =null;
+        List<Marca> marcas = new ArrayList<>();
+        
+        conn = getConnection();
+        stmt = conn.prepareStatement(SQL_SELECT);
+        rs = stmt.executeQuery();
+        while(rs.next()){
+            int Idm = rs.getInt("Idm");//"nombre puestos en la base de datos"
+            String Nombre = rs.getString("Nombre");
+            String Tipo = rs.getString("Tipo");
+            Date Fecha = rs.getDate("Fecha");
+            //instancio un nuevo objeto
+            marcas.add(new Marca(Idm, Nombre, Tipo, Fecha));//clase persona
+        }
+        close(rs);
+        close(stmt);
+        close(conn);
+        
+        return marcas;
+    }
+    public int insertar(Marca marca){
+        //declaro e inicializo mis variables
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int registros= 0;
+        try {
+            //1.Establecemos la conexión
+            conn= getConnection ();
+            //2.preparo mi instruccion
+            stmt = conn.prepareStatement(SQL_INSERT);
+            //Asignar losvalores de los ? de la consulta
+            stmt.setInt(1, marca.getIdm());
+            stmt.setString(2, marca.getNombre());
+            stmt.setString(3, marca.getTipo());
+            stmt.setDate(4, marca.getFecha());
+            
+            
+            //3.ejecuto la query
+            registros = stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                stmt.close();
+                conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        
+        return registros;
+    }
+    public int actualizar(Marca marca){
+        //declaro e inicializo mis variables
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int registros= 0;
+        try {
+            //1.Establecemos la conexión
+            conn= getConnection ();
+            //2.preparo mi instruccion
+            stmt = conn.prepareStatement(SQL_UPDATE);
+            //Asignar losvalores de los ? de la consulta
+            
+            stmt.setString(1, marca.getNombre());
+            stmt.setString(2, marca.getTipo());
+            stmt.setDate(3, marca.getFecha());
+            stmt.setInt(4, marca.getIdm());
+            
+            
+            registros = stmt.executeUpdate();
+            
+            //3.ejecuto la query
+            registros = stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                stmt.close();
+                conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        
+        return registros;
+    }
+    public int delete(Marca marca){
+        //declaro e inicializo mis variables
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int registros= 0;
+        try {
+            //1.Establecemos la conexión
+            conn= getConnection ();
+            //2.preparo mi instruccion
+            stmt = conn.prepareStatement(SQL_DELETE);
+            //Asignar losvalores de los ? de la consulta
+            stmt.setInt(1, marca.getIdm());
+            
+            //3.ejecuto la query
+            registros = stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            try {
+                stmt.close();
+                conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        
+        return registros;
+    }
+}
